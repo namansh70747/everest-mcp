@@ -1,6 +1,7 @@
 # everest-mcp — OpenEverest MCP Gateway
 
 [![CI](https://github.com/namansh70747/everest-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/namansh70747/everest-mcp/actions/workflows/ci.yml)
+[![Watch the demo](https://img.shields.io/badge/Watch%20the%20demo-Google%20Drive-4285F4)](https://drive.google.com/drive/folders/1SjwLMbS1AV8kH8IqbjOwmg4xHCjh7hr2?usp=drive_link)
 
 A [Model Context Protocol](https://modelcontextprotocol.io) server that lets MCP
 clients (Claude Desktop, Cursor, Claude Code) operate
@@ -9,9 +10,17 @@ clients (Claude Desktop, Cursor, Claude Code) operate
 
 Every tool call is made against the OpenEverest v1 API with the connecting
 user's bearer token, so OpenEverest re-checks it against that user's RBAC policy.
-The gateway does not implement its own authorization — a call the user is not
+The gateway does not implement its own authorization. A call the user is not
 permitted to make is rejected by the host. Mutating tools and
 credential-returning tools are disabled by default.
+
+## Demo
+
+A short walkthrough driving the gateway from Claude Desktop: it reads live
+database state (a Ready MongoDB instance), then has a backup request blocked by
+OpenEverest RBAC with an HTTP 403, because the connected user is read-only.
+
+[Watch the demo (Google Drive)](https://drive.google.com/drive/folders/1SjwLMbS1AV8kH8IqbjOwmg4xHCjh7hr2?usp=drive_link)
 
 It is packaged as an OpenEverest [generic plugin](https://github.com/openeverest/openeverest/blob/main/docs/process/generic-plugins-design.md)
 and built on primitives the host already provides: the `/v1/plugins/{name}/*`

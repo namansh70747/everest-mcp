@@ -4,6 +4,11 @@ Two ways to run the gateway against data: a scriptable terminal demo and an
 interactive Claude Desktop session. Both exercise the same behavior — read
 database state, then attempt a write that RBAC may deny.
 
+## Video
+
+[Watch the demo (Google Drive)](https://drive.google.com/drive/folders/1SjwLMbS1AV8kH8IqbjOwmg4xHCjh7hr2?usp=drive_link).
+Claude Desktop reads a live database, then is blocked from a write by RBAC.
+
 ## Recorded cast
 
 [`everest-mcp-demo.cast`](everest-mcp-demo.cast) is an asciinema recording of a
