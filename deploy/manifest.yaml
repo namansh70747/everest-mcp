@@ -1,0 +1,59 @@
+# OpenEverest Plugin manifest for the MCP Gateway.
+#
+# This registers everest-mcp as a generic plugin (see the host's
+# docs/process/generic-plugins-design.md). The plugin runs as an in-cluster
+# backend Service; the OpenEverest API server reverse-proxies
+# /v1/plugins/everest-mcp/* to it and injects the acting user's identity, so
+# every call the gateway makes is RBAC-checked by the host.
+#
+# Apply with: everestctl plugin install / kubectl apply -f deploy/manifest.yaml
+apiVersion: core.openeverest.io/v1alpha1
+kind: Plugin
+metadata:
+  name: everest-mcp
+spec:
+  displayName: "MCP Gateway"
+  description: "Operate OpenEverest databases from AI agents (Claude, Cursor, any MCP client) under OpenEverest RBAC."
+  version: "0.1.0"
+  vendor: "Naman Sharma"
+  compatibleHostVersions: ">=2.0.0 <3.0.0"
+  enabled: true
+
+  # Backend: the MCP server, reachable in-cluster. The host proxies
+  # /v1/plugins/everest-mcp/* to this Service. The gateway speaks MCP over
+  # Streamable HTTP in this mode (run the binary with the HTTP transport).
+  backend:
+    serviceRef:
+      namespace: everest-plugins
+      name: everest-mcp-svc
+      port: 8080
+
+  # Read-only permissions by default. The gateway never needs more than the
+  # connecting user has; these declare its maximal intent for the daemon/event
+  # paths. Write tools (create_backup) require the user's own RBAC at call time.
+  permissions:
+    - verb: read
+      resource: clusters
+    - verb: read
+      resource: namespaces
+    - verb: read
+      resource: instances
+    - verb: read
+      resource: backups
+
+  # CLI contribution: `everestctl plugin run mcp -- serve` runs the MCP server
+  # locally over stdio for desktop clients (Claude Desktop, Cursor).
+  cli:
+    image: "ghcr.io/namansh70747/everest-mcp:0.1.0"
+    subcommand: "mcp"
+    description: "Run the OpenEverest MCP gateway for a local AI client."
+---
+# Per-namespace enablement. Repeat for each namespace AI agents may operate in.
+apiVersion: core.openeverest.io/v1alpha1
+kind: PluginInstallation
+metadata:
+  name: everest-mcp
+  namespace: team-alpha
+spec:
+  pluginName: everest-mcp
+  enabled: true

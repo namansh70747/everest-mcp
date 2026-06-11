@@ -1,0 +1,15 @@
+# Binaries
+/everest-mcp
+/everest-fake
+/out/
+*.exe
+
+# Test / coverage
+*.out
+coverage.*
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+/everest-mcp-demo
